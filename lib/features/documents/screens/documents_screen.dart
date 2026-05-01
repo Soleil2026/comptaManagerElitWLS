@@ -137,10 +137,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             title: const Text('Clients'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ClientsScreen()),
-              );
+              Navigator.pushNamed(context, '/clients');
             },
           ),
           ListTile(

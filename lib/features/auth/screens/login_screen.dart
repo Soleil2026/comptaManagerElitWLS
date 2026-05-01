@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:compta_manager/core/theme/app_theme.dart';
+import 'package:compta_manager/data/database/database_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,9 +22,33 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/documents');
+      final username = _usernameController.text;
+      final password = _passwordController.text;
+      
+      // Simple authentication check
+      if (username == 'admin' && password == 'admin123') {
+        Navigator.pushReplacementNamed(context, '/documents');
+      } else {
+        // Check database for user
+        final db = await DatabaseHelper.instance.query(
+          'users',
+          where: 'username = ? AND password_hash = ? AND is_active = 1',
+          whereArgs: [username, password],
+        );
+        
+        if (db.isNotEmpty) {
+          Navigator.pushReplacementNamed(context, '/documents');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Identifiants incorrects'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 

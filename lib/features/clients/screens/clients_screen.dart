@@ -13,6 +13,7 @@ class ClientsScreen extends StatefulWidget {
 class _ClientsScreenState extends State<ClientsScreen> {
   List<Client> _clients = [];
   final _searchController = TextEditingController();
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -21,13 +22,59 @@ class _ClientsScreenState extends State<ClientsScreen> {
   }
 
   Future<void> _loadClients() async {
-    final clients = await DatabaseHelper.instance.query(
-      'clients',
-      orderBy: 'name ASC',
+    setState(() => _isLoading = true);
+    try {
+      final clients = await DatabaseHelper.instance.query(
+        'clients',
+        orderBy: 'name ASC',
+      );
+      setState(() {
+        _clients = clients.map((c) => Client.fromMap(c)).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteClient(Client client) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmer suppression'),
+        content: Text('Voulez-vous vraiment supprimer "${client.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Supprimer'),
+          ),
+        ],
+      ),
     );
-    setState(() {
-      _clients = clients.map((c) => Client.fromMap(c)).toList();
-    });
+
+    if (confirm == true) {
+      await DatabaseHelper.instance.delete(
+        'clients',
+        where: 'id = ?',
+        whereArgs: [client.id],
+      );
+      await _loadClients();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Client supprimé'), backgroundColor: Colors.orange),
+        );
+      }
+    }
   }
 
   List<Client> get _filteredClients {
@@ -45,6 +92,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Clients'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadClients,
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -63,14 +116,16 @@ class _ClientsScreenState extends State<ClientsScreen> {
             ),
           ),
           Expanded(
-            child: _filteredClients.isEmpty
-                ? _buildEmptyState()
-                : _buildClientsList(),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _filteredClients.isEmpty
+                    ? _buildEmptyState()
+                    : _buildClientsList(),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddClientDialog,
+        onPressed: () => _showClientForm(),
         backgroundColor: AppTheme.primaryColor,
         child: const Icon(Icons.add),
       ),
@@ -85,12 +140,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
           Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
           const SizedBox(height: 16),
           Text(
-            'Aucun client',
+            _clients.isEmpty ? 'Aucun client' : 'Aucun résultat',
             style: TextStyle(fontSize: 18, color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),
           Text(
-            'Cliquez sur + pour ajouter un client',
+            _clients.isEmpty ? 'Cliquez sur + pour ajouter' : 'Essayez autre recherche',
             style: TextStyle(color: Colors.grey[500]),
           ),
         ],
@@ -114,16 +169,43 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 style: const TextStyle(color: Colors.white),
               ),
             ),
-            title: Text(client.name),
+            title: Text(client.name, style: const TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (client.code != null) Text('Code: ${client.code}'),
-                if (client.ice != null) Text('ICE: ${client.ice}'),
-                if (client.email != null) Text(client.email!),
+                if (client.code != null) Text('Code: ${client.code}', style: const TextStyle(fontSize: 12)),
+                if (client.ice != null) Text('ICE: ${client.ice}', style: const TextStyle(fontSize: 12)),
+                if (client.email != null) Text(client.email!, style: const TextStyle(fontSize: 12)),
               ],
             ),
-            trailing: const Icon(Icons.chevron_right),
+            trailing: PopupMenuButton(
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit, size: 20),
+                      SizedBox(width: 8),
+                      Text('Modifier'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete, size: 20, color: Colors.red),
+                      SizedBox(width: 8),
+                      Text('Supprimer', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ],
+              onSelected: (value) {
+                if (value == 'edit') _showClientForm(client: client);
+                if (value == 'delete') _deleteClient(client);
+              },
+            ),
             isThreeLine: true,
             onTap: () => _showClientDetails(client),
           ),
@@ -132,20 +214,78 @@ class _ClientsScreenState extends State<ClientsScreen> {
     );
   }
 
-  void _showAddClientDialog() {
-    final nameController = TextEditingController();
-    final codeController = TextEditingController();
-    final iceController = TextEditingController();
-    final rcController = TextEditingController();
-    final addressController = TextEditingController();
-    final phoneController = TextEditingController();
-    final emailController = TextEditingController();
-    final contactController = TextEditingController();
-
+  void _showClientDetails(Client client) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Nouveau Client'),
+        title: Row(
+          children: [
+            Expanded(child: Text(client.name)),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Navigator.pop(context);
+                _showClientForm(client: client);
+              },
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (client.code != null) _detailRow('Code', client.code!),
+              if (client.ice != null) _detailRow('ICE', client.ice!),
+              if (client.rc != null) _detailRow('RC', client.rc!),
+              if (client.address != null) _detailRow('Adresse', client.address!),
+              if (client.phone != null) _detailRow('Téléphone', client.phone!),
+              if (client.email != null) _detailRow('Email', client.email!),
+              if (client.contactPerson != null) _detailRow('Contact', client.contactPerson!),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Fermer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text('$label:', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          ),
+          Expanded(child: Text(value, style: const TextStyle(fontSize: 12))),
+        ],
+      ),
+    );
+  }
+
+  void _showClientForm({Client? client}) {
+    final isEdit = client != null;
+    final nameController = TextEditingController(text: client?.name ?? '');
+    final codeController = TextEditingController(text: client?.code ?? '');
+    final iceController = TextEditingController(text: client?.ice ?? '');
+    final rcController = TextEditingController(text: client?.rc ?? '');
+    final addressController = TextEditingController(text: client?.address ?? '');
+    final phoneController = TextEditingController(text: client?.phone ?? '');
+    final emailController = TextEditingController(text: client?.email ?? '');
+    final contactController = TextEditingController(text: client?.contactPerson ?? '');
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(isEdit ? 'Modifier Client' : 'Nouveau Client'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -197,79 +337,60 @@ class _ClientsScreenState extends State<ClientsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Annuler'),
           ),
           ElevatedButton(
             onPressed: () async {
-              if (nameController.text.isNotEmpty) {
-                await DatabaseHelper.instance.insert('clients', {
-                  'name': nameController.text,
-                  'code': codeController.text.isNotEmpty ? codeController.text : null,
-                  'ice': iceController.text.isNotEmpty ? iceController.text : null,
-                  'rc': rcController.text.isNotEmpty ? rcController.text : null,
-                  'address': addressController.text.isNotEmpty ? addressController.text : null,
-                  'phone': phoneController.text.isNotEmpty ? phoneController.text : null,
-                  'email': emailController.text.isNotEmpty ? emailController.text : null,
-                  'contact_person': contactController.text.isNotEmpty ? contactController.text : null,
-                  'created_at': DateTime.now().toIso8601String(),
-                  'is_active': 1,
-                });
-                _loadClients();
-                if (context.mounted) Navigator.pop(context);
+              if (nameController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Le champ Nom est obligatoire'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
               }
+
+              final Map<String, dynamic> data = {
+                'name': nameController.text,
+                'code': codeController.text.isEmpty ? null : codeController.text,
+                'ice': iceController.text.isEmpty ? null : iceController.text,
+                'rc': rcController.text.isEmpty ? null : rcController.text,
+                'address': addressController.text.isEmpty ? null : addressController.text,
+                'phone': phoneController.text.isEmpty ? null : phoneController.text,
+                'email': emailController.text.isEmpty ? null : emailController.text,
+                'contact_person': contactController.text.isEmpty ? null : contactController.text,
+                'is_active': 1,
+              };
+
+              if (isEdit) {
+                await DatabaseHelper.instance.update(
+                  'clients',
+                  data,
+                  where: 'id = ?',
+                  whereArgs: [client.id],
+                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Client modifié!'), backgroundColor: Colors.green),
+                  );
+                }
+              } else {
+                data['created_at'] = DateTime.now().toIso8601String();
+                await DatabaseHelper.instance.insert('clients', data);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Client ajouté!'), backgroundColor: Colors.green),
+                  );
+                }
+              }
+
+              _loadClients();
+              if (dialogContext.mounted) Navigator.pop(dialogContext);
             },
-            child: const Text('Ajouter'),
+            child: Text(isEdit ? 'Enregistrer' : 'Ajouter'),
           ),
-        ],
-      ),
-    );
-  }
-
-  void _showClientDetails(Client client) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(client.name),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (client.code != null) _detailRow('Code', client.code!),
-              if (client.ice != null) _detailRow('ICE', client.ice!),
-              if (client.rc != null) _detailRow('RC', client.rc!),
-              if (client.address != null) _detailRow('Adresse', client.address!),
-              if (client.phone != null) _detailRow('Téléphone', client.phone!),
-              if (client.email != null) _detailRow('Email', client.email!),
-              if (client.contactPerson != null) _detailRow('Contact', client.contactPerson!),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Fermer'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _detailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(child: Text(value)),
         ],
       ),
     );
@@ -278,6 +399,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
   @override
   void dispose() {
     _searchController.dispose();
-    super.dispose;
+    super.dispose();
   }
 }

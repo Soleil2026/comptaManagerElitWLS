@@ -66,22 +66,20 @@ class DatabaseHelper {
         description TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT,
-        created_by INTEGER NOT NULL,
-        FOREIGN KEY (client_id) REFERENCES clients (id),
-        FOREIGN KEY (created_by) REFERENCES users (id)
+        created_by INTEGER,
+        FOREIGN KEY (client_id) REFERENCES clients (id)
       )
     ''');
 
     await db.execute('''
       CREATE TABLE audit_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
+        user_id INTEGER,
         action TEXT NOT NULL,
         table_name TEXT,
         record_id INTEGER,
         details TEXT,
-        created_at TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users (id)
+        created_at TEXT NOT NULL
       )
     ''');
 
@@ -92,11 +90,26 @@ class DatabaseHelper {
     await db.execute('''
       CREATE INDEX idx_documents_status ON documents(status)
     ''');
+
+    await db.insert('users', {
+      'username': 'admin',
+      'email': 'admin@compta.dz',
+      'password_hash': 'admin123',
+      'role': 'Administrateur',
+      'full_name': 'Administrateur',
+      'created_at': DateTime.now().toIso8601String(),
+      'is_active': 1,
+    });
   }
 
   Future<int> insert(String table, Map<String, dynamic> data) async {
-    final db = await database;
-    return await db.insert(table, data);
+    try {
+      final db = await database;
+      return await db.insert(table, data);
+    } catch (e) {
+      print('Database error: $e');
+      return -1;
+    }
   }
 
   Future<List<Map<String, dynamic>>> query(
@@ -105,13 +118,18 @@ class DatabaseHelper {
     List<dynamic>? whereArgs,
     String? orderBy,
   }) async {
-    final db = await database;
-    return await db.query(
-      table,
-      where: where,
-      whereArgs: whereArgs,
-      orderBy: orderBy,
-    );
+    try {
+      final db = await database;
+      return await db.query(
+        table,
+        where: where,
+        whereArgs: whereArgs,
+        orderBy: orderBy,
+      );
+    } catch (e) {
+      print('Database error: $e');
+      return [];
+    }
   }
 
   Future<int> update(
