@@ -378,15 +378,20 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 }
               } else {
                 data['created_at'] = DateTime.now().toIso8601String();
-                await DatabaseHelper.instance.insert('clients', data);
-                if (mounted) {
+                final result = await DatabaseHelper.instance.insert('clients', data);
+                if (result > 0 && mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Client ajouté!'), backgroundColor: Colors.green),
+                  );
+                } else if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Erreur lors de l\'ajout'), backgroundColor: Colors.red),
                   );
                 }
               }
 
               _loadClients();
+              await Future.delayed(const Duration(milliseconds: 300));
               if (dialogContext.mounted) Navigator.pop(dialogContext);
             },
             child: Text(isEdit ? 'Enregistrer' : 'Ajouter'),

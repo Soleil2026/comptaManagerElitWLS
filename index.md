@@ -39,6 +39,7 @@
 |------|---------|------|
 | [[Project Overview]] | Synthèse complète du projet: modules, utilisateurs, contraintes, priorisation | 2026-05-01 |
 | [[Commercial Strategy]] | Stratégie commerciale: positionnement, pricing, go-to-market, KPIs | 2026-05-01 |
+| [[Analyse Critique]] | Analyse critique: skills, tools, workflow + Recommandations | 2026-05-01 |
 
 ## Tasks (tasks)
 | Page | Summary | Date |

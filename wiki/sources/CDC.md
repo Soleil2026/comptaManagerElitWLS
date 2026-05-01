@@ -1,6 +1,7 @@
 ---
 created: 2026-05-01
 updated: 2026-05-01
+version: 1.1 (lint correction)
 tags: [source, specification]
 source_url: raw/assets/CDC.md
 source_date: 2026-05-01
@@ -22,8 +23,32 @@ Cahier des charges définissant les besoins fonctionnels, les objectifs produit,
 3. **Positionnement:** Système de pilotage métier — ne remplace pas la saisie comptable primaire
 4. **Contraintes:** Réglementaires (conservation, archivage), Sécurité (journalisation, droits), Techniques (Desktop Windows 10/11), Gouvernance (documentation, contrats)
 5. **Priorisation:** MVP (4 modules) → V1 (3 modules) → V2 (enrichissements)
-6. **Objets de base:** Client, Exercice, Document, Mission, Déclaration, Recours, KPI, Template, Utilisateur, Rôle
 
+## Périmètre par Phase
+
+### MVP (Phase 1 — Mois 1-6)
+| Module | Priorité |
+|--------|----------|
+| Hub Documentaire | P0 |
+| Administration & Sécurité | P0 |
+| Gestion du Cabinet | P0 |
+| Veille Réglementaire | P1 (basique) |
+
+### V1 (Phase 2 — Mois 7-12)
+| Module | Priorité |
+|--------|----------|
+| Fiscalité et Déclarations | P1 |
+| Commissariat aux Comptes | P2 |
+| Performance/KPI | P2 |
+
+### V2 (Phase 3 — Mois 13-24)
+| Module | Priorité |
+|--------|----------|
+| Recours Fiscaux C4 | P2 |
+| Études Commerciales | P3 |
+| Bibliothèque Templates | P3 |
+
+6. **Objets de base:** Client, Exercice, Document, Mission, Déclaration, Recours, KPI, Template, Utilisateur, Rôle
 ## Modules détail
 
 | Module | But |

@@ -1,5 +1,12 @@
 # Log
 
+## [2026-05-01] analyse | Analyse critique du projet
+- Cree: [[Analyse Critique]] (skills, tools, workflow)
+- Points forts: graphify, stack moderne, B.L.A.S.T., CE
+- Points a ameliorer: perimeter troppo large, pas de code, CI/CD manquant
+- Recommandations: MVP avec Hub Documentaire uniquement
+- Mis a jour index.md
+
 ## [2026-05-01] lint + harmonize | Gouvernance alignée
 - Lint passé: 17 pages, 78 liens, 0 orphans
 - Harmonisé: tous documents avec gouvernance BLAST + CE
@@ -58,6 +65,10 @@
 - Créé: [[A.N.T. Architecture]]
 - Créé: source [[CDC]]
 - Mis à jour: index.md
+
+## [2026-05-01] lint | Correction périmètre MVP
+- Ajouté: périmètre MVP/V1/V2 explicite dans [[CDC]]
+- Mis à jour: updated + version
 
 ## [2026-05-01] query | Explique BLAST en détail
 - Répondu à la question sur B.L.A.S.T.

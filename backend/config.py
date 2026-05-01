@@ -4,14 +4,25 @@ from datetime import timedelta
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'compta-manager-secret-key-2024')
     
-    # Database
+    # Database - Use SQLite for development, PostgreSQL for production
+    DB_TYPE = os.environ.get('DB_TYPE', 'sqlite')  # 'postgresql' or 'sqlite'
+    
+    # PostgreSQL config
     DB_HOST = os.environ.get('DB_HOST', 'localhost')
     DB_PORT = os.environ.get('DB_PORT', '5432')
     DB_NAME = os.environ.get('DB_NAME', 'compta_manager')
     DB_USER = os.environ.get('DB_USER', 'postgres')
     DB_PASSWORD = os.environ.get('DB_PASSWORD', 'postgres')
     
-    SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    # SQLite config
+    SQLITE_PATH = os.environ.get('SQLITE_PATH', 'compta_manager.db')
+    
+    # Choose database URI based on DB_TYPE
+    if DB_TYPE == 'postgresql':
+        SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    else:
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{SQLITE_PATH}'
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # JWT
@@ -29,10 +40,12 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    DB_TYPE = 'sqlite'  # Use SQLite by default in development
 
 
 class ProductionConfig(Config):
     DEBUG = False
+    DB_TYPE = 'postgresql'
 
 
 class TestConfig(Config):
