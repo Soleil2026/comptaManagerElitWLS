@@ -1,0 +1,24 @@
+# Checklist — Fermeture de Session
+
+**Projet:** comptaManagerDZ
+**Objectif:** Standardiser la fermeture de chaque session de travail
+**Fréquence:** À chaque déconnexion
+**Responsable:** Opencode (Multi-Agent Orchestrator)
+**Version:** 1.0
+---
+
+## Checklist
+
+### Step 1 — Vérifier les Tâches Complétées
+
+- Y a-t-il des tâches terminées dans [[Task Plan]]?
+- Marquer les tâches terminées
+- Archiver les tâches obsolètes
+
+### Step 2 — Logger les Actions
+
+```bash
+cat >> log.od <<EOF
+## [AAAA-OM-OD] session | Résumé
+- Action 1
+- Action 2

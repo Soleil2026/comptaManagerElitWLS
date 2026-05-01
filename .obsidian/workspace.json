@@ -214,6 +214,7 @@
   },
   "active": "4505fdcf04ca64fc",
   "lastOpenFiles": [
+    "wiki/tasks/Session Checklist.od",
     "Sans titre",
     "backend/Dockerfile",
     "docker-compose.yml",
@@ -224,7 +225,6 @@
     "e2e/node_modules/playwright/lib/mcp/test/testTools.js",
     "e2e/node_modules/playwright/lib/mcp/test/testTool.js",
     "e2e/node_modules/playwright/lib/mcp/test/testContext.js",
-    "e2e/node_modules/playwright/lib/mcp/test/streams.js",
     "e2e/node_modules/playwright/lib/agents/playwright-test-planner.agent.md",
     "e2e/node_modules/playwright/lib/agents/playwright-test-plan.prompt.md",
     "e2e/node_modules/playwright/lib/agents/playwright-test-healer.agent.md",
