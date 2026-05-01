@@ -1,16 +1,48 @@
-# compta_manager
+# comptaManagerDZ
 
-A new Flutter project.
+Application Desktop de gestion pour cabinets comptables en Algérie.
 
-## Getting Started
+## Description
 
-This project is a starting point for a Flutter application.
+Application Flutter de gestion documentaire et comptable pour cabinets d'expertise comptable et de commissariat aux comptes en Algérie.
 
-A few resources to get you started if this is your first Flutter project:
+## Fonctionnalités
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Hub Documentaire** (Module 1) - Centraliser, classer, rechercher et archiver les documents
+- **Administration et Sécurité** (Module 11) - Gestion utilisateurs, audit, sécurité
+- Gestion des clients
+- Authentification utilisateur
+- Journal d'audit
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Stack
+
+- **Frontend:** Flutter (Desktop Windows)
+- **Backend:** Python (API REST)
+- **Base de données:** SQLite (migration PostgreSQL prévue)
+
+## Version
+
+1.0.0 (MVP)
+
+## Installation
+
+### Prérequis
+- Flutter SDK 3.0+
+- Python 3.8+
+
+### Backend
+```bash
+cd backend
+pip install -r requirements.txt
+python main.py
+```
+
+### Frontend
+```bash
+flutter pub get
+flutter run
+```
+
+## License
+
+Propriétaire - Tous droits réservés
