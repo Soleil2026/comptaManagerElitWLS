@@ -1,0 +1,101 @@
+# Checklist — Ouverture de Session
+
+**Projet:** comptaManagerDZ
+**Objectif:** Standardiser l'ouverture de chaque session de travail
+**Fréquence:** À chaque connexion
+**Responsable:** Opencode (Multi-Agent Orchestrator)
+**Version:** 1.0
+
+---
+
+## Checklist
+
+### Step 1 — Git Pull
+```bash
+git pull origin master
+```
+**Vérification:** "Already up to date" ou mise à jour reçue.
+
+---
+
+### Step 2 — Lire index.md
+```bash
+cat index.md
+```
+**Objectif:** Accès rapide à l'état du projet
+- Dernières synthèses
+- Tâches en cours
+- Liens clés
+
+---
+
+### Step 3 — Lire log.md (5 dernières entrées)
+```bash
+head -50 log.md
+```
+**Objectif:** Dernières actions documentées
+- Sessions précédentes
+- Statut du projet
+- Actions en attente
+
+---
+
+### Step 4 — Lint (optionnel)
+```bash
+/lint
+```
+**Objectif:** Vérifier santé wiki avant travail
+- Contradictions
+- Orphelins
+- Liens cassés
+
+---
+
+### Step 5 — Identifier Prochaine Action
+
+| Question | Action |
+|---------|--------|
+| Y a-t-il des tâches en cours dans `[[Task Plan]]`? | Continuer |
+| Y a-t-il des synthèses à créer? | Créer |
+| Y a-t-il des anomalies lint? | Corriger |
+
+---
+
+## Status des Fichiers Clés
+
+| Fichier | Rôle | Fréq. lecture |
+|--------|------|-------------|
+| `index.od` | Catalogue principal | Chaque session |
+| `log.md` | Mémoire externe | Chaque session |
+| `wiki/tasks/Task Plan.od` | Suivi tâches | Chaque session |
+| `wiki/synthesis/*.od` | Synthèses | Si pertinent |
+| `CLAUD.od` | System prompt | Rarement |
+
+---
+
+## Raccourcis Rapides
+
+```bash
+# Pull
+git pull origin master
+
+# Status
+git status
+
+# Log (10 lignes)
+head -30 log.md
+
+# Index
+cat index.md
+
+# Tâches
+cat wiki/tasks/Task\ Plan.od
+```
+
+---
+
+## Gouvernance
+- **Règle CE:** Structured Note-Taking — ne pas garder en contexte, consulter les fichiers
+- **Règle CE:** Just-in-Time Retrieval — charger seulement le nécessaire
+- **Orchestrateur:** [[Opencode]]
+- **Cycle:** [[BLAST Framework]] Phase B (Blueprint)
