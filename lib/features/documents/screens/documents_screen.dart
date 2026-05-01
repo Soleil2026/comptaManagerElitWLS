@@ -4,6 +4,7 @@ import 'package:compta_manager/core/constants/app_constants.dart';
 import 'package:compta_manager/data/models/document.dart';
 import 'package:compta_manager/data/models/client.dart';
 import 'package:compta_manager/data/database/database_helper.dart';
+import 'package:compta_manager/features/clients/screens/clients_screen.dart';
 
 class DocumentsScreen extends StatefulWidget {
   const DocumentsScreen({super.key});
@@ -134,7 +135,13 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           ListTile(
             leading: const Icon(Icons.people),
             title: const Text('Clients'),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ClientsScreen()),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.assessment),
