@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:compta_manager/core/theme/app_theme.dart';
 import 'package:compta_manager/data/database/database_helper.dart';
 import 'package:compta_manager/features/auth/screens/login_screen.dart';
+import 'package:compta_manager/features/documents/screens/documents_screen.dart';
+import 'package:compta_manager/features/clients/screens/clients_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +27,19 @@ class ComptaManagerApp extends StatelessWidget {
       title: 'comptaManagerDZ',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const LoginScreen(),
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(builder: (_) => const LoginScreen());
+          case '/documents':
+            return MaterialPageRoute(builder: (_) => const DocumentsScreen());
+          case '/clients':
+            return MaterialPageRoute(builder: (_) => const ClientsScreen());
+          default:
+            return MaterialPageRoute(builder: (_) => const LoginScreen());
+        }
+      },
     );
   }
 }

@@ -91,15 +91,20 @@ class DatabaseHelper {
       CREATE INDEX idx_documents_status ON documents(status)
     ''');
 
-    await db.insert('users', {
-      'username': 'admin',
-      'email': 'admin@compta.dz',
-      'password_hash': 'admin123',
-      'role': 'Administrateur',
-      'full_name': 'Administrateur',
-      'created_at': DateTime.now().toIso8601String(),
-      'is_active': 1,
-    });
+    // Insert default admin user
+    try {
+      await db.insert('users', {
+        'username': 'admin',
+        'email': 'admin@compta.dz',
+        'password_hash': 'admin123',
+        'role': 'Administrateur',
+        'full_name': 'Administrateur',
+        'created_at': DateTime.now().toIso8601String(),
+        'is_active': 1,
+      });
+    } catch (e) {
+      print('User already exists: $e');
+    }
   }
 
   Future<int> insert(String table, Map<String, dynamic> data) async {
@@ -107,7 +112,7 @@ class DatabaseHelper {
       final db = await database;
       return await db.insert(table, data);
     } catch (e) {
-      print('Database error: $e');
+      print('Insert error: $e');
       return -1;
     }
   }
@@ -127,7 +132,7 @@ class DatabaseHelper {
         orderBy: orderBy,
       );
     } catch (e) {
-      print('Database error: $e');
+      print('Query error: $e');
       return [];
     }
   }
