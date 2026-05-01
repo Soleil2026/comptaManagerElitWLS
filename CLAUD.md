@@ -219,6 +219,7 @@ git config user.email "smcleading@gmail.com"
 | Setting | Value |
 |---------|-------|
 | Repository | https://github.com/Soleil2026/comptaManagerElitWLS |
+| GitHub Account | https://github.com/Soleil2026 |
 | Username | Soleil2026 |
 | Email | smcleading@gmail.com |
 
