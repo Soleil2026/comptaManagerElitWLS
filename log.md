@@ -1,5 +1,13 @@
 # Log
 
+## [2026-05-02] skills | Intégration Antigravity Awesome Skills
+- Installed: 1,424 skills from antigravity-awesome-skills (v10.8.0)
+- Created: skill-mapping.md (mapping skills → sub-agents)
+- Created: blast-bundles.md (bundles par phase BLAST)
+- Created: wiki/sources/Skill Management Guide.md
+- Organisé: sous-dossiers (gsd, openspec, superpowers, shared, others)
+- Mis a jour index.md
+
 ## [2026-05-01] analyse | Analyse critique du projet
 - Cree: [[Analyse Critique]] (skills, tools, workflow)
 - Points forts: graphify, stack moderne, B.L.A.S.T., CE

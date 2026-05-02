@@ -43,6 +43,12 @@ This schema follows these principles:
 ├── .claude/              # Commands (Sub-agents specialized tasks)
 │   ├── commands/
 │   └── memory/           # Structured notes outside context
+├── .agents/              # Skills pour sub-agents
+│   └── skills/           # 1,424 Antigravity Awesome Skills
+│       ├── gsd/          # GSD: planification, tasks
+│       ├── openspec/     # OpenSpec: architecture, schemas
+│       ├── superpowers/  # Superpowers: tests, implémentation
+│       └── blast-bundles.md  # Bundles par phase BLAST
 ├── Clippings/            # Web clips (Obsidian Web Clipper)
 ├── raw/                  # Immutable source documents
 │   └── assets/           # Downloaded images, articles
@@ -50,6 +56,7 @@ This schema follows these principles:
     ├── entities/         # People, places, organizations
     ├── concepts/         # Topics, theories, ideas
     ├── sources/          # Source summaries & notes
+    │   └── Skill Management Guide.md  # Guide skills
     ├── queries/          # Q&A, analyses, comparisons
     ├── synthesis/        # Thematic synthesis pages
     └── tasks/            # Task tracking (structured notes)

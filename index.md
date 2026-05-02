@@ -33,6 +33,7 @@
 | [[Effective Context Engineering for AI Agents]] | Article Anthropic sur l'optimisation du contexte pour agents IA | 2026-05-01 |
 | [[Product Requirements]] | Exigences produit commercial: perf, scalabilité, intégrations | 2026-05-01 |
 | [[Modules]] | Référentiel fonctionnel des 11 modules avec règles, dépendances, statuts | 2026-05-01 |
+| [[Skill Management Guide]] | Guide gestion 1,424 skills avec sub-agents | 2026-05-02 |
 
 ## Synthesis (synthesis)
 | Page | Summary | Date |
