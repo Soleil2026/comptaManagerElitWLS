@@ -103,6 +103,9 @@ Taches specifiques pour maintenir la philosophie CE:
 - 2026-05-01: Project alignment with Context Engineering initiated
 - All wiki documents updated to reflect CE principles
 - CLAUD.md enhanced with CE workflows
+- 2026-05-02: Antigravity Awesome Skills integrated (1,424 skills)
+- 2026-05-02: E2E tests added for Hub Documentaire (6 tests)
+- 2026-05-02: API tests created for backend validation
 
 ---
 
