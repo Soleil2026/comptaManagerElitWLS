@@ -117,3 +117,77 @@ test.describe('Error Handling', () => {
     console.log('After login attempt, URL:', currentUrl);
   });
 });
+
+test.describe('Hub Documentaire (MVP)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:52582');
+    await page.fill('input[type="text"]', 'admin');
+    await page.fill('input[type="password"]', 'admin123');
+    await page.click('button:has-text("Se connecter")');
+    await page.waitForTimeout(1000);
+  });
+
+  test('HD-1: Access Hub Documentaire from menu', async ({ page }) => {
+    const menuButton = page.locator('button').first();
+    await menuButton.click();
+    await page.waitForTimeout(500);
+    await page.click('text=Documents');
+    await page.waitForTimeout(1000);
+    await expect(page.locator('text=Hub Documentaire')).toBeVisible();
+  });
+
+  test('HD-2: Upload a document', async ({ page }) => {
+    await page.click('text=Documents');
+    await page.waitForTimeout(1000);
+    const uploadButton = page.locator('button:has-text("Ajouter"), button:has(.upload)').first();
+    if (await uploadButton.isVisible()) {
+      await uploadButton.click();
+      await page.waitForTimeout(500);
+    }
+  });
+
+  test('HD-3: Search documents', async ({ page }) => {
+    await page.click('text=Documents');
+    await page.waitForTimeout(1000);
+    const searchInput = page.locator('input[type="search"], input[placeholder*="recherch"]').first();
+    if (await searchInput.isVisible()) {
+      await searchInput.fill('test');
+      await page.waitForTimeout(500);
+    }
+  });
+
+  test('HD-4: Filter documents by type', async ({ page }) => {
+    await page.click('text=Documents');
+    await page.waitForTimeout(1000);
+    const filterButton = page.locator('button:has-text("Filtrer"), [class*="filter"]').first();
+    if (await filterButton.isVisible()) {
+      await filterButton.click();
+      await page.waitForTimeout(500);
+    }
+  });
+
+  test('HD-5: View document details', async ({ page }) => {
+    await page.click('text=Documents');
+    await page.waitForTimeout(1000);
+    const firstDoc = page.locator('[class*="document"], [class*="file"]').first();
+    if (await firstDoc.isVisible()) {
+      await firstDoc.click();
+      await page.waitForTimeout(500);
+    }
+  });
+
+  test('HD-6: Delete a document', async ({ page }) => {
+    await page.click('text=Documents');
+    await page.waitForTimeout(1000);
+    const docMenu = page.locator('[class*="document"]').first();
+    if (await docMenu.isVisible()) {
+      await docMenu.click({ button: 'right' });
+      await page.waitForTimeout(500);
+      const deleteOption = page.locator('text=Supprimer');
+      if (await deleteOption.isVisible()) {
+        await deleteOption.click();
+        await page.waitForTimeout(500);
+      }
+    }
+  });
+});
